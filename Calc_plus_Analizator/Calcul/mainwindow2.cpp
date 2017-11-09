@@ -112,7 +112,7 @@ void MainWindow2::on_pushButton_2_clicked()
         sort(COPY.begin(),COPY.end(),Comp2);
         ui->label_6->setText("Status: Файл открыт | Пакеты отсортированы по номеру");
     }
-    double MED=-1;
+    double MED=0;
     int MAX=-1,MIN=-1;
     for(int i=0;i<(int)COPY.size();i++)
     {
