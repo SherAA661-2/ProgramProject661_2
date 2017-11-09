@@ -20,6 +20,7 @@ struct DATA
     int num;
     int t1;
     int t2;
+    vector<unsigned char> D;
 };
 vector<DATA> M(0),COPY(0);
 void MainWindow2::on_pushButton_clicked()
@@ -39,17 +40,25 @@ void MainWindow2::on_pushButton_clicked()
         F.seekg(sizeof(char)*sme);
         PackHead PakH;
         M.clear();
-        DATA Image;
         int i=1;
         ///////////////////////////////////////////////////////////
         while(sme<=SIZE)
         {
+            DATA Image;
             F.read((char*)&PakH,sizeof(PackHead));
             sme+=16;
             Image.len=PakH.len;
             Image.num=i;
             Image.t1=PakH.t1;
             Image.t2=PakH.t2;
+            int j=1;
+            while(j<=PakH.len)
+            {
+                unsigned char p;
+                F.read((char*)&p,sizeof(char));
+                Image.D.push_back(p);
+                j++;
+            }
             M.push_back(Image);
             i++;
             sme+=PakH.len;
@@ -94,6 +103,7 @@ void MainWindow2::on_pushButton_2_clicked()
     int START=(ui->lineEdit->text()).toInt()-1;
     int END=(ui->lineEdit_2->text()).toInt()-1;
     ui->textEdit->clear();
+    ui->textEdit_2->clear();
     int checker=0;
     if(END>M.size())
     {
@@ -130,6 +140,31 @@ void MainWindow2::on_pushButton_2_clicked()
             INFO+="\n\t}";
             ui->textEdit->append(INFO);
             ui->textEdit->append("");
+            /////////////////////////////////////////////
+            INFO="";
+            INFO+="Данные Пакета №";
+            INFO+=QString::number(COPY[i].num);
+            INFO+=":\n\t{";
+            for(int j=0;j<COPY[i].D.size();j++)
+            {
+                if(j%16==0)
+                    INFO+="\n\t";
+                if(j%8==0 && j%16!=0)
+                     INFO+="  ";
+                QString Buf=QString::number(COPY[i].D[j],16);
+                if(Buf.size()<2)
+                    INFO+="0"+Buf;
+                else
+                    INFO+=Buf;
+                INFO+=" ";
+            }
+            INFO+="\n\t}";
+            ui->textEdit_2->append(INFO);
+            ui->textEdit_2->append("");
+
+
+
+
 
          }
         checker++;
